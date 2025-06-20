@@ -1,51 +1,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 
 public class Pontuacao : MonoBehaviour
 {
     [SerializeField]
-    private AudioSource audioAcerto;
-    [SerializeField]
-    private AudioSource audioErro;
-    [SerializeField]
-    private Text textoPontuacao;
-    [SerializeField]
-    private GeradorDeLixo geradorLixo;
-    private int acertos;
-
-    private void Start()
-    {
-        geradorLixo.GerarLixo();
-    }
+    private Interface inter; 
+    private int pontos;
 
     public void Pontuar()
     {
-        acertos++; 
-        AtualizarPontos();
-        //geradorLixo.GerarLixo();
+        pontos++; 
+        inter.AtualizarPontos(pontos);
     }
-
-    private void AtualizarPontos()
-    {
-        textoPontuacao.text = "Pontuação: " + acertos.ToString();
-    }
-
-    public void AudioPontuacao(bool acerto)
-    {
-        if (acerto)
-        {
-            audioAcerto.Play();
-        } else
-        {
-            audioErro.Play();
-        }
-        
-    }
-
-
-
-
 }

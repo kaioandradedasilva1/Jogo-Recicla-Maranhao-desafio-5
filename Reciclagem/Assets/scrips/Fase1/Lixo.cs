@@ -7,70 +7,44 @@ public class Lixo : MonoBehaviour
     private Pontuacao pontuacao;
     private GeradorDeLixo geradorLixo;
     private Vector3 posicaoInicial;
-    private bool arrastando = false;
-
-    private void Awake()
-    {
-        pontuacao = FindObjectOfType<Pontuacao>(); 
-        geradorLixo = FindObjectOfType<GeradorDeLixo>();
-    }
+    public float Velocidade = 10f;
+    public bool Arrastando = false;
 
     private void Start()
     {
-        posicaoInicial = transform.position;
+        posicaoInicial = transform.position; 
     }
 
     private void OnMouseDown()
     {    
-        arrastando = true;
+        Arrastando = true;
     }
 
     private void OnMouseUp()
     {   
-        arrastando = false;
+        Arrastando = false;
+    }
+
+    private void Update()
+    {
+        
     }
     
     private void FixedUpdate()
     {
-        MoverLixo(arrastando); 
-    }
-
-    private void OnTriggerExit2D(Collider2D ColisaoLixeira)
-    {
-        int indice = geradorLixo.indiceLixo;
-        string tipoLixo = transform.GetChild(indice).tag;
-        string tipoLixeira = ColisaoLixeira.tag;
-        if (tipoLixeira == tipoLixo && !arrastando)
-        {            
-            Reciclar();
-        } else if (!arrastando)
+        if (transform.position == posicaoInicial)
         {
-            NaoReciclar();
+            GetComponent<CircleCollider2D>().isTrigger = true;
         }
-    }
 
-    private void MoverLixo(bool valor)
-    {
-        if (valor)
+        if (Arrastando)
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             transform.position = new Vector3(mousePos.x, mousePos.y, 0);
         } else
         {
-            transform.position = posicaoInicial;
+            transform.position = Vector2.MoveTowards(transform.position, posicaoInicial, Velocidade * Time.deltaTime);
         }
+        
     }
-
-    private void Reciclar()
-    {
-        Destroy(gameObject);
-        pontuacao.Pontuar();
-        pontuacao.AudioPontuacao(true); 
-    }
-
-    private void NaoReciclar()
-    {
-        pontuacao.AudioPontuacao(false);
-    }
-
 }

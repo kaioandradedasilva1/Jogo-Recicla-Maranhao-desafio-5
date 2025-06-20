@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Lixeira : MonoBehaviour
+public class Lixeira2 : MonoBehaviour
 {
     private bool arrastando = false;
     private void OnMouseDown()
