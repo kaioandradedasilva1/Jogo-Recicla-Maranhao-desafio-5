@@ -30,7 +30,7 @@ public class Interface : MonoBehaviour
     
     public void AtualizarPontos(int pontos)
     {
-        textoPontuacao.text = "Pontuação: " + pontos.ToString();
+        textoPontuacao.text = "Acertos: " + pontos.ToString();
     }
 
     public void AtualizarDescricaoLixo(string tipoLixo) 

@@ -32,7 +32,7 @@ public class Lixeira : MonoBehaviour
         Destroy(lixo);
         pontuacao.Pontuar();
         inter.AudioPontuacao(true);
-        inter.AtualizarTextoAcerto("Lixo Reciclado!");
+        inter.AtualizarTextoAcerto("Acertou!");
         inter.AtualizarDescricaoLixo("");
         StartCoroutine(GerarLixoDepoisDeSegundos(1f)) ;
     }
@@ -45,7 +45,7 @@ public class Lixeira : MonoBehaviour
     private void NaoReciclar() 
     {
         inter.AudioPontuacao(false);
-        inter.AtualizarTextoAcerto("Lixo Não Reciclado!");
+        inter.AtualizarTextoAcerto("Lixeira Errada!");
     }
 }
 
