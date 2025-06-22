@@ -4,11 +4,9 @@ using UnityEngine;
 
 public class Lixo : MonoBehaviour
 {
-    private Pontuacao pontuacao;
-    private GeradorDeLixo geradorLixo;
     private Vector3 posicaoInicial;
     public float Velocidade = 10f;
-    public bool Arrastando = false;
+    public bool Arrastando = false; 
 
     private void Start()
     {
@@ -24,11 +22,6 @@ public class Lixo : MonoBehaviour
     {   
         Arrastando = false;
     }
-
-    private void Update()
-    {
-        
-    }
     
     private void FixedUpdate()
     {
@@ -36,7 +29,7 @@ public class Lixo : MonoBehaviour
         {
             GetComponent<CircleCollider2D>().isTrigger = true;
         }
-
+        
         if (Arrastando)
         {
             Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
@@ -45,6 +38,5 @@ public class Lixo : MonoBehaviour
         {
             transform.position = Vector2.MoveTowards(transform.position, posicaoInicial, Velocidade * Time.deltaTime);
         }
-        
     }
 }

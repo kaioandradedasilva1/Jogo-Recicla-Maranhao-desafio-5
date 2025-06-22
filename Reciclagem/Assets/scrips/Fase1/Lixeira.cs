@@ -30,22 +30,13 @@ public class Lixeira : MonoBehaviour
     private void Reciclar(GameObject lixo)
     {
         Destroy(lixo);
-        pontuacao.Pontuar();
-        inter.AudioPontuacao(true);
-        inter.AtualizarTextoAcerto("Acertou!");
+        pontuacao.Pontuar(true);
         inter.AtualizarDescricaoLixo("");
-        StartCoroutine(GerarLixoDepoisDeSegundos(1f)) ;
-    }
-    IEnumerator GerarLixoDepoisDeSegundos(float segundos)
-    {
-        yield return new WaitForSeconds(segundos);
-        geradorLixo.GerarLixo();
     }
 
     private void NaoReciclar() 
     {
-        inter.AudioPontuacao(false);
-        inter.AtualizarTextoAcerto("Lixeira Errada!");
+        pontuacao.Pontuar(false);
     }
 }
 
