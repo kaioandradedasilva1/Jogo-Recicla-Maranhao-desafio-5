@@ -6,35 +6,44 @@ using UnityEngine;
 public class Pontuacao : MonoBehaviour
 {
     [SerializeField] private GeradorDeLixo geradorLixo;
-    [SerializeField] private Interface inter; 
+    [SerializeField] private ControlaUI controlaUI; 
     [SerializeField] private GamePlay gamePlay;
     public int acertos = 0;
     public int acertosMax = 20;
     private int erros = 0; 
     private int pontos = 0;
 
-    public void Pontuar(bool valor)
+    private void Start()
     {
+        string textAcertoMax = "Colete " + acertosMax.ToString() + " Lixos";
+        controlaUI.AtualizarTextoAcerto(textAcertoMax , acertosMax);
+    }
+
+    public void Pontuar(bool valor)
+    { 
         if(valor)
         {
             acertos++;
-            inter.AtualizarTextoAcerto("Acertou!");
-            gamePlay.GerarNovoLixo(acertos < acertosMax);
+            controlaUI.AtualizarTextoAcerto("Acertou!", acertosMax - acertos);
+            if (acertos < acertosMax)
+            {
+                gamePlay.GerarNovoLixo();
+            }
         } else 
         {
             erros++;
-            inter.AtualizarTextoAcerto("Lixeira Errada!");
+            controlaUI.AtualizarTextoAcerto("Lixeira Errada!", acertosMax - acertos);
         }
 
-        pontos = acertos*100 - erros*20 - Mathf.RoundToInt(gamePlay.tempoDecorrido) * 2;
-        
+        pontos = acertos*100 - erros*20 - Mathf.RoundToInt(gamePlay.tempoDecorrido*10);
+
         if (pontos < 0) 
         {
             pontos = 0; 
         }
 
-        inter.AtualizarPontuacao(acertos, pontos);
-        inter.AudioPontuacao(valor);
+        controlaUI.AtualizarPontuacao(acertos, pontos);
+        controlaUI.AudioPontuacao(valor);
         gamePlay.VerficarCertos(acertos == acertosMax, pontos);
     }
 
@@ -43,6 +52,20 @@ public class Pontuacao : MonoBehaviour
         acertos = 0;
         erros = 0;
         pontos = 0; 
-        inter.AtualizarPontuacao(acertos, pontos);
+        controlaUI.AtualizarPontuacao(acertos, pontos);
+        string textAcertoMax = "Colete " + acertosMax.ToString() + " lixos";
+        controlaUI.AtualizarTextoAcerto(textAcertoMax , acertosMax);
     }
+    
+    public void SalvarRecorde()
+    {
+        int recorde = PlayerPrefs.GetInt("Recorde", 0);
+
+        if (pontos > recorde)
+        {
+            PlayerPrefs.SetInt("Recorde", pontos);
+            PlayerPrefs.Save();
+        }
+    }
+
 }

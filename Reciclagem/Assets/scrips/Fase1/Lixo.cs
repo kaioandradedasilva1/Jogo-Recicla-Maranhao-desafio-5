@@ -7,15 +7,27 @@ public class Lixo : MonoBehaviour
     private Vector3 posicaoInicial;
     public float Velocidade = 10f;
     public bool Arrastando = false; 
+    private GamePlay gamePlay; 
 
     private void Start()
     {
         posicaoInicial = transform.position; 
+        gamePlay = FindObjectOfType<GamePlay>();
     }
 
     private void OnMouseDown()
     {    
         Arrastando = true;
+        gamePlay.jogoExecutando = true;
+
+    }
+
+    private void Update()
+    {
+        if(gamePlay.jogoParado)
+        {
+            Destroy(gameObject);
+        }
     }
 
     private void OnMouseUp()

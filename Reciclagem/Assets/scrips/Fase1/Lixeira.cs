@@ -7,7 +7,7 @@ public class Lixeira : MonoBehaviour
     [SerializeField]
     private Pontuacao pontuacao; 
     [SerializeField]
-    private Interface inter; 
+    private ControlaUI controlaUI; 
     [SerializeField]
     private GeradorDeLixo geradorLixo;
 
@@ -31,7 +31,7 @@ public class Lixeira : MonoBehaviour
     {
         Destroy(lixo);
         pontuacao.Pontuar(true);
-        inter.AtualizarDescricaoLixo("");
+        controlaUI.AtualizarDescricaoLixo("");
     }
 
     private void NaoReciclar() 

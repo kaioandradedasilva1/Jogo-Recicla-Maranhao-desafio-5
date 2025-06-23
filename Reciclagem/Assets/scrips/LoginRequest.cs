@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class LoginRequest : MonoBehaviour
 {
 	[SerializeField]
-	private ControleDeInterfaceUI controleUI;
+	private ControlaUI controlaUI;
 	//Informações do usuário
 	[Header("Campo de Entrada")]
 	public InputField campoUsuario;
@@ -41,7 +41,7 @@ public class LoginRequest : MonoBehaviour
 	    {
 			string erro = "Erro na requisição: " + request.error;
 	        //Debug.LogError(erro);
-			controleUI.ExibirMensagemLogin(erro);
+			controlaUI.ExibirMensagemLogin(erro);
 	    }
 	    else
 	    {
@@ -52,22 +52,22 @@ public class LoginRequest : MonoBehaviour
 	        {
 				string mensagemSucesso = "Login realizado com sucesso: " + response.message;
 	            //Debug.Log(mensagemSucesso);
-				controleUI.ExibirMensagemLogin(mensagemSucesso); 
-				controleUI.MostrarTelaJogo();
+				controlaUI.ExibirMensagemLogin(mensagemSucesso); 
+				controlaUI.MostrarTelaPlay();
 
 	        }
 	        else
 	        {
 				string mensagemFalha = "Falha no login: " + response.message;
 	            //Debug.Log(mensagemFalha);
-				controleUI.ExibirMensagemLogin(mensagemFalha);
+				controlaUI.ExibirMensagemLogin(mensagemFalha);
 	        }
 	    }
 	}
 
 	public void PularLogin() 
 	{
-		controleUI.MostrarTelaJogo();
+		controlaUI.MostrarTelaPlay();
 	}
 	
 	//Informações enviadas para o backend

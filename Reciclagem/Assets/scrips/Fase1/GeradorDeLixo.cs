@@ -5,10 +5,16 @@ using UnityEngine;
 public class GeradorDeLixo : MonoBehaviour
 {
     [SerializeField] private GameObject prefabLixo;
-    [SerializeField] private Interface inter;
+    [SerializeField] private ControlaUI controlaUI;
 
     private Vector2 A, B, C, D;
     public int indiceLixo; 
+    private Vector3 posicaoInicial; 
+
+    private void Start() 
+    {
+        posicaoInicial = transform.position;
+    }
 
     // Este método será chamado pela TrocaCenario
     public void ConfigurarVertices(List<Vector2> vertices)
@@ -19,6 +25,11 @@ public class GeradorDeLixo : MonoBehaviour
         D = vertices[3];
 
         InvokeRepeating(nameof(GerarPontoAleatorioNoTrapezio), 0f, 2f);
+    }
+
+    public void ResertarPosicaoGeradorLixo()
+    {
+        transform.position = posicaoInicial;
     }
 
     public void GerarPontoAleatorioNoTrapezio()
@@ -43,6 +54,6 @@ public class GeradorDeLixo : MonoBehaviour
         Transform lixoEscolhido = novoLixo.transform.GetChild(indiceAleatorio);
         lixoEscolhido.gameObject.SetActive(true);
 
-        inter.AtualizarDescricaoLixo(lixoEscolhido.tag);
+        controlaUI.AtualizarDescricaoLixo(lixoEscolhido.tag);
     }
 }

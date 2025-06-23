@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class TrocaCenario : MonoBehaviour
 {
-    [SerializeField] private Interface inter; 
+    [SerializeField] private ControlaUI controlaUI; 
     [SerializeField] private GeradorDeLixo geradorLixo;
     [SerializeField] private Pontuacao pontuacao;
     [SerializeField] private GamePlay gamePlay;
@@ -20,7 +20,7 @@ public class TrocaCenario : MonoBehaviour
 
     public void SelecionaCenarioPraia()
     {
-        inter.TrocarCenario("Praia");
+        controlaUI.TrocarCenario("Praia");
 
         VerticesTrapesio = new List<Vector2>
         {
@@ -35,7 +35,7 @@ public class TrocaCenario : MonoBehaviour
 
     public void SelecionaCenarioCentroHistorico()
     {
-        inter.TrocarCenario("CentroHistorico");
+        controlaUI.TrocarCenario("CentroHistorico");
 
         VerticesTrapesio = new List<Vector2>
         {

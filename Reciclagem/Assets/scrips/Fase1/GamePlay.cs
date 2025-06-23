@@ -6,13 +6,14 @@ public class GamePlay : MonoBehaviour
 {
     [SerializeField] private Pontuacao pontuacao; 
     [SerializeField] private GeradorDeLixo geradorLixo; 
-    [SerializeField] private Interface inter; 
+    [SerializeField] private ControlaUI controlaUI; 
     [SerializeField] private TrocaCenario trocaCenario;
-    [SerializeField] private TrocarCena trocarCena; 
-    public bool jogoExecutando = false; 
+    public bool jogoExecutando = false;
+    public bool jogoParado;  
     public float tempoDecorrido = 0f;
 
-    void Update()
+
+    private void Update()
     {
         ContagemTempoDecorrido();
     }
@@ -22,15 +23,21 @@ public class GamePlay : MonoBehaviour
         if(jogoExecutando)
         {
             tempoDecorrido +=Time.deltaTime;
-            inter.AtualizarTempoDecorrido(tempoDecorrido);
         }
+        controlaUI.AtualizarTempoDecorrido(tempoDecorrido);
     }
+
+    public void IniciarGamePlay()
+    {
+        controlaUI.MostrarTelaEscolhaCenario();
+    }
+    
 
     public void IniciarJogo()
     {
-        jogoExecutando = true;
+        jogoParado = false;
+        geradorLixo.ResertarPosicaoGeradorLixo();
         geradorLixo.GerarLixo();
-        
     }
 
     public void PausarJogo(bool valor)
@@ -42,14 +49,14 @@ public class GamePlay : MonoBehaviour
         {
             jogoExecutando = true;
         }
-        inter.MostarPainelPause(valor);
+        controlaUI.MostarPainelPause(valor);
 
     }
 
     public void ReiniciarJogo()
     {
         tempoDecorrido = 0f;
-        inter.MostrarPainelGamePlay(true);
+        controlaUI.MostrarPainelGamePlay(true);
         IniciarJogo();
         pontuacao.ZerarPontos();
     }
@@ -58,15 +65,14 @@ public class GamePlay : MonoBehaviour
     {
         jogoExecutando = false;
         tempoDecorrido = 0f;
-        trocarCena.CarregarCena("MenuInicial");
+        controlaUI.MostrarPainelMenu();
+        pontuacao.ZerarPontos();
+        jogoParado = true; 
     }
 
-    public void GerarNovoLixo(bool valor)
+    public void GerarNovoLixo()
     {
-        if (valor) 
-        {
         StartCoroutine(GerarLixoDepoisDeSegundos(1f));
-        }
     }
 
     IEnumerator GerarLixoDepoisDeSegundos(float segundos)
@@ -79,8 +85,9 @@ public class GamePlay : MonoBehaviour
     {
         if (valor) 
         {
-            inter.MostrarPainelGamePlay(false);
-            inter.AtualizarPontuacaoFinal(pontos);
+            pontuacao.SalvarRecorde();
+            controlaUI.MostrarPainelGamePlay(false);
+            controlaUI.AtualizarPainelGameOver(pontos);
         }
     }
 
