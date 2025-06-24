@@ -7,54 +7,71 @@ public class Pontuacao : MonoBehaviour
 {
     [SerializeField] private GeradorDeLixo geradorLixo;
     [SerializeField] private ControlaUI controlaUI; 
+    [SerializeField] private ControlaAudio controlaAudio;
     [SerializeField] private GamePlay gamePlay;
-    public int acertos = 0;
-    public int acertosMax = 20;
+    
+    public int Acertos = 0;
+    public int AcertosMax = 20;
+    public float TempoParaAcerto = 2f; 
     private int erros = 0; 
     private int pontos = 0;
+    private float tempoAnterior = 0;
 
     private void Start()
     {
-        string textAcertoMax = "Colete " + acertosMax.ToString() + " Lixos";
-        controlaUI.AtualizarTextoAcerto(textAcertoMax , acertosMax);
+        string textAcertoMax = "Colete " + AcertosMax.ToString() + " Lixos";
+        controlaUI.AtualizarTextoAcerto(textAcertoMax , AcertosMax);
     }
 
     public void Pontuar(bool valor)
     { 
+        float intervaloTempo = gamePlay.tempoDecorrido - tempoAnterior;
+    
         if(valor)
         {
-            acertos++;
-            controlaUI.AtualizarTextoAcerto("Acertou!", acertosMax - acertos);
-            if (acertos < acertosMax)
+            Acertos++;
+            controlaUI.AtualizarTextoAcerto("Acertou!", AcertosMax - Acertos);
+            if (Acertos < AcertosMax)
             {
                 gamePlay.GerarNovoLixo();
             }
         } else 
         {
             erros++;
-            controlaUI.AtualizarTextoAcerto("Lixeira Errada!", acertosMax - acertos);
+            controlaUI.AtualizarTextoAcerto("Lixeira Errada!", AcertosMax - Acertos);
         }
 
-        pontos = acertos*100 - erros*20 - Mathf.RoundToInt(gamePlay.tempoDecorrido*10);
+        CalcularPontos(intervaloTempo);
+        
+        controlaUI.AtualizarPontuacao(Acertos, pontos);
+        controlaAudio.TocarAudioPontuacao(valor);
+        gamePlay.VerficarCertos(Acertos == AcertosMax, pontos);
+    }
+
+    private void CalcularPontos(float tempo)
+    {
+        float tempoExedente = 0; 
+        if (tempo > TempoParaAcerto)
+        {
+            tempoExedente = tempo - TempoParaAcerto; 
+        }
+
+        pontos = Acertos*100 - erros*20 - Mathf.RoundToInt(tempoExedente)*2;
 
         if (pontos < 0) 
         {
             pontos = 0; 
         }
-
-        controlaUI.AtualizarPontuacao(acertos, pontos);
-        controlaUI.AudioPontuacao(valor);
-        gamePlay.VerficarCertos(acertos == acertosMax, pontos);
     }
 
     public void ZerarPontos()
     {
-        acertos = 0;
+        Acertos = 0;
         erros = 0;
         pontos = 0; 
-        controlaUI.AtualizarPontuacao(acertos, pontos);
-        string textAcertoMax = "Colete " + acertosMax.ToString() + " lixos";
-        controlaUI.AtualizarTextoAcerto(textAcertoMax , acertosMax);
+        controlaUI.AtualizarPontuacao(Acertos, pontos);
+        string textAcertoMax = "Colete " + AcertosMax.ToString() + " lixos";
+        controlaUI.AtualizarTextoAcerto(textAcertoMax , AcertosMax);
     }
     
     public void SalvarRecorde()

@@ -8,6 +8,8 @@ public class GamePlay : MonoBehaviour
     [SerializeField] private GeradorDeLixo geradorLixo; 
     [SerializeField] private ControlaUI controlaUI; 
     [SerializeField] private TrocaCenario trocaCenario;
+    [SerializeField] private ControlaAudio controlaAudio;
+
     public bool jogoExecutando = false;
     public bool jogoParado;  
     public float tempoDecorrido = 0f;
@@ -29,45 +31,63 @@ public class GamePlay : MonoBehaviour
 
     public void IniciarGamePlay()
     {
+        controlaAudio.TocarClique();
         controlaUI.MostrarTelaEscolhaCenario();
     }
-    
 
     public void IniciarJogo()
     {
-        jogoParado = false;
+        controlaAudio.TocarClique();
+        controlaAudio.TocarAudioMenu(false);
+        controlaAudio.TocarAudioGamePlay(true);
         geradorLixo.ResertarPosicaoGeradorLixo();
         geradorLixo.GerarLixo();
     }
 
     public void PausarJogo(bool valor)
     {
-        if (valor)
-        {
-            jogoExecutando = false;
-        } else 
-        {
-            jogoExecutando = true;
-        }
+        controlaAudio.TocarClique();
+        controlaAudio.PausarAudioGamePlay(valor);
+        jogoExecutando = !valor;
         controlaUI.MostarPainelPause(valor);
 
     }
 
-    public void ReiniciarJogo()
+    public void ReiniciarJogo(string origem)
     {
-        tempoDecorrido = 0f;
-        controlaUI.MostrarPainelGamePlay(true);
-        IniciarJogo();
+        if(origem == "pause")
+        {
+            PausarJogo(false);
+        } else if (origem == "gameOver")
+        {
+            controlaUI.MostrarPainelGamePlay(true);
+        }
         pontuacao.ZerarPontos();
+        tempoDecorrido = 0; 
+        DestrirLixo();
+        IniciarJogo();
     }
 
     public void PararJogo()
     {
+        controlaAudio.TocarClique();
+        controlaAudio.TocarAudioGamePlay(false);
+        controlaAudio.TocarAudioMenu(true);
         jogoExecutando = false;
         tempoDecorrido = 0f;
         controlaUI.MostrarPainelMenu();
         pontuacao.ZerarPontos();
-        jogoParado = true; 
+        DestrirLixo();
+    }
+
+    private void DestrirLixo()
+    {
+        Lixo lixo = FindObjectOfType<Lixo>();
+
+        if(lixo) 
+        {
+            Destroy(lixo.gameObject);
+        }
     }
 
     public void GerarNovoLixo()
@@ -88,6 +108,8 @@ public class GamePlay : MonoBehaviour
             pontuacao.SalvarRecorde();
             controlaUI.MostrarPainelGamePlay(false);
             controlaUI.AtualizarPainelGameOver(pontos);
+            controlaAudio.TocarAudioConcluido();
+
         }
     }
 

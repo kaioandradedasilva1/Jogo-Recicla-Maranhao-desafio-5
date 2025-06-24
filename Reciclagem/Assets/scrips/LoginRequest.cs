@@ -4,8 +4,8 @@ using UnityEngine.Networking;
 using UnityEngine.UI;
 public class LoginRequest : MonoBehaviour
 {
-	[SerializeField]
-	private ControlaUI controlaUI;
+	[SerializeField] private ControlaUI controlaUI;
+	[SerializeField] private ControlaAudio controlaAudio;
 	//Informações do usuário
 	[Header("Campo de Entrada")]
 	public InputField campoUsuario;
@@ -17,6 +17,7 @@ public class LoginRequest : MonoBehaviour
 	//Função que deve ser chamada na hora de fazer login
 	public void FazerLogin()
 	{
+		controlaAudio.TocarClique();
 		string usuario = campoUsuario.text;
 		string senha = campoSenha.text;
 	    StartCoroutine(EnviarLogin(usuario, senha));
@@ -67,7 +68,10 @@ public class LoginRequest : MonoBehaviour
 
 	public void PularLogin() 
 	{
+		controlaAudio.TocarClique();
+		controlaAudio.TocarAudioMenu(true);
 		controlaUI.MostrarTelaPlay();
+		
 	}
 	
 	//Informações enviadas para o backend

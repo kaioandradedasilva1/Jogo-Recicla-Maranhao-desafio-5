@@ -30,11 +30,6 @@ public class ControlaUI : MonoBehaviour
     [SerializeField] private GameObject cenarioPraia;
     [SerializeField] private GameObject cenarioCentroHistorico;
 
-    // Audios
-    [SerializeField] private AudioSource audioAcerto;
-    [SerializeField] private AudioSource audioErro;
-
-
     private void Start()
     {
         MostrarTelaLogin();
@@ -138,14 +133,4 @@ public class ControlaUI : MonoBehaviour
         textoRecorde.text = "Seu Record: " + recorde.ToString() + " pontos";
     }
 
-    public void AudioPontuacao(bool acerto)
-    {
-        if (acerto)
-        {
-            audioAcerto.Play();
-        } else
-        {
-            audioErro.Play();
-        }
-    }
 }

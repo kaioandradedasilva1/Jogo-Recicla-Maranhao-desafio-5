@@ -8,31 +8,26 @@ public class Lixo : MonoBehaviour
     public float Velocidade = 10f;
     public bool Arrastando = false; 
     private GamePlay gamePlay; 
+    private ControlaAudio controlaAudio;
 
     private void Start()
     {
         posicaoInicial = transform.position; 
         gamePlay = FindObjectOfType<GamePlay>();
+        controlaAudio = FindObjectOfType<ControlaAudio>();
     }
-
+    
     private void OnMouseDown()
     {    
         Arrastando = true;
         gamePlay.jogoExecutando = true;
-
-    }
-
-    private void Update()
-    {
-        if(gamePlay.jogoParado)
-        {
-            Destroy(gameObject);
-        }
+        controlaAudio.TocarClique();
     }
 
     private void OnMouseUp()
     {   
         Arrastando = false;
+        controlaAudio.TocarClique();
     }
     
     private void FixedUpdate()
