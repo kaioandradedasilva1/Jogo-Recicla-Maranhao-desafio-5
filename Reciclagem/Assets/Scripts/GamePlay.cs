@@ -9,6 +9,7 @@ public class GamePlay : MonoBehaviour
     [SerializeField] private ControlaUI controlaUI; 
     [SerializeField] private TrocaCenario trocaCenario;
     [SerializeField] private ControlaAudio controlaAudio;
+    [SerializeField] private DadosDoUsuario dadosUsuario;
 
     public bool jogoExecutando = false;
     public bool jogoParado;  
@@ -29,10 +30,10 @@ public class GamePlay : MonoBehaviour
         controlaUI.AtualizarTempoDecorrido(tempoDecorrido);
     }
 
-    public void IniciarGamePlay()
+    public void IniciarGamePlay(bool valor)
     {
         controlaAudio.TocarClique();
-        controlaUI.MostrarTelaEscolhaCenario();
+        controlaUI.MostrarTelaEscolhaCenario(valor);
     }
 
     public void IniciarJogo()
@@ -46,8 +47,16 @@ public class GamePlay : MonoBehaviour
 
     public void PausarJogo(bool valor)
     {
+        float volume;
+        if(valor)
+        {
+            volume = 0.2f; 
+        } else
+        {
+            volume = 0.5f; 
+        }
         controlaAudio.TocarClique();
-        controlaAudio.PausarAudioGamePlay(valor);
+        controlaAudio.VolumeAudioGamePlay(volume);
         jogoExecutando = !valor;
         controlaUI.MostarPainelPause(valor);
 
@@ -62,6 +71,7 @@ public class GamePlay : MonoBehaviour
         {
             controlaUI.MostrarPainelGamePlay(true);
         }
+        controlaAudio.VolumeAudioGamePlay(0.5f);
         pontuacao.ZerarPontos();
         tempoDecorrido = 0; 
         DestrirLixo();
@@ -105,11 +115,11 @@ public class GamePlay : MonoBehaviour
     {
         if (valor) 
         {
-            pontuacao.SalvarRecorde();
+            pontuacao.VerificarRecorde();
             controlaUI.MostrarPainelGamePlay(false);
-            controlaUI.AtualizarPainelGameOver(pontos);
+            controlaUI.AtualizarPainelGameOver(pontos, dadosUsuario.recordeAtual);
+            controlaUI.AtualizarTextoParabens(dadosUsuario.nomeUsuario);
             controlaAudio.TocarAudioConcluido();
-
         }
     }
 

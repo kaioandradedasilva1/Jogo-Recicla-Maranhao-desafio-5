@@ -6,10 +6,12 @@ public class LoginRequest : MonoBehaviour
 {
 	[SerializeField] private ControlaUI controlaUI;
 	[SerializeField] private ControlaAudio controlaAudio;
+	[SerializeField] private DadosDoUsuario dadosUsuario; 
 	//Informações do usuário
 	[Header("Campo de Entrada")]
 	public InputField campoUsuario;
 	public InputField campoSenha;
+	public InputField campoNomeConvidado;
 	
 	//Endereço da API do back end
 	private string apiUrl = "https://suaapi.com/auth/login";
@@ -53,9 +55,11 @@ public class LoginRequest : MonoBehaviour
 	        {
 				string mensagemSucesso = "Login realizado com sucesso: " + response.message;
 	            //Debug.Log(mensagemSucesso);
-				controlaUI.ExibirMensagemLogin(mensagemSucesso); 
+				//controlaUI.ExibirMensagemLogin(mensagemSucesso); 
+				dadosUsuario.DefinirUsuarioOnline(usuario);
+				controlaUI.AtualizarSaldacao(usuario); 
 				controlaUI.MostrarTelaPlay();
-
+				
 	        }
 	        else
 	        {
@@ -66,14 +70,29 @@ public class LoginRequest : MonoBehaviour
 	    }
 	}
 
-	public void PularLogin() 
+	public void LoginConvidado() 
 	{
 		controlaAudio.TocarClique();
-		controlaAudio.TocarAudioMenu(true);
-		controlaUI.MostrarTelaPlay();
-		
+		string nomeConvidado = campoNomeConvidado.text;
+		if(nomeConvidado.Length > 2)
+		{
+			controlaAudio.TocarAudioMenu(true);
+			controlaUI.MostrarTelaPlay();
+			dadosUsuario.DefinirUsuarioLocal(nomeConvidado);
+			controlaUI.AtualizarSaldacao(nomeConvidado);
+		} else
+		{
+			controlaUI.ExibirMensagemLogin("Insira seu nome");
+		}
 	}
-	
+
+	public void FazerLogout()
+	{
+		controlaAudio.TocarAudioMenu(false);
+		controlaUI.MostrarTelaLogin();
+	}
+
+
 	//Informações enviadas para o backend
 	[System.Serializable]
 	public class LoginData

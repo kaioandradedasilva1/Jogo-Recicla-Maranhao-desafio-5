@@ -9,6 +9,7 @@ public class Pontuacao : MonoBehaviour
     [SerializeField] private ControlaUI controlaUI; 
     [SerializeField] private ControlaAudio controlaAudio;
     [SerializeField] private GamePlay gamePlay;
+    [SerializeField] private DadosDoUsuario dadosUsuario; 
     
     public int Acertos = 0;
     public int AcertosMax = 20;
@@ -46,6 +47,7 @@ public class Pontuacao : MonoBehaviour
         controlaUI.AtualizarPontuacao(Acertos, pontos);
         controlaAudio.TocarAudioPontuacao(valor);
         gamePlay.VerficarCertos(Acertos == AcertosMax, pontos);
+        tempoAnterior = gamePlay.tempoDecorrido;
     }
 
     private void CalcularPontos(float tempo)
@@ -55,8 +57,8 @@ public class Pontuacao : MonoBehaviour
         {
             tempoExedente = tempo - TempoParaAcerto; 
         }
-
-        pontos = Acertos*100 - erros*20 - Mathf.RoundToInt(tempoExedente)*2;
+        Debug.Log(tempoExedente);
+        pontos = Acertos*100 - erros*20 - Mathf.RoundToInt(tempoExedente)*5;
 
         if (pontos < 0) 
         {
@@ -74,14 +76,12 @@ public class Pontuacao : MonoBehaviour
         controlaUI.AtualizarTextoAcerto(textAcertoMax , AcertosMax);
     }
     
-    public void SalvarRecorde()
+    public void VerificarRecorde()
     {
-        int recorde = PlayerPrefs.GetInt("Recorde", 0);
-
-        if (pontos > recorde)
+        int record = dadosUsuario.recordeAtual;
+        if (pontos > record)
         {
-            PlayerPrefs.SetInt("Recorde", pontos);
-            PlayerPrefs.Save();
+            dadosUsuario.SalvarRecorde(pontos);
         }
     }
 

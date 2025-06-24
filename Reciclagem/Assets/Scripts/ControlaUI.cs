@@ -10,6 +10,7 @@ public class ControlaUI : MonoBehaviour
     [SerializeField] private GameObject telaLogin; 
     [SerializeField] private GameObject telaPlay; 
     [SerializeField] private Text mensagemLogin;
+    [SerializeField] private Text textoSaudacao; 
 
     // GamePlay
     [SerializeField] private GameObject painelGamePlay;
@@ -24,6 +25,7 @@ public class ControlaUI : MonoBehaviour
     [SerializeField] private GameObject painelGameOver;
     [SerializeField] private Text textoPontuacaoFinal;
     [SerializeField] private Text textoRecorde; 
+    [SerializeField] private Text textoParabens;
 
     //Cenarios
     [SerializeField] private GameObject painelEscolhaCenario;
@@ -56,16 +58,26 @@ public class ControlaUI : MonoBehaviour
         telaPlay.SetActive(true);
     }
 
+    public void AtualizarSaldacao(string nome)
+    {
+        textoSaudacao.text = "Olá, " + nome; 
+    }
+
+    public void AtualizarTextoParabens(string nome)
+    {
+        textoParabens.text = "Parabéns " + nome + "!";
+    }
+
     public void ExibirMensagemLogin(string mensagem) 
     {
         mensagemLogin.text = mensagem;
     }
 
-    public void MostrarTelaEscolhaCenario()
+    public void MostrarTelaEscolhaCenario(bool valor)
     {
-        painelMenu.SetActive(false);
-        telaPlay.SetActive(false);
-        painelEscolhaCenario.SetActive(true);
+        painelMenu.SetActive(!valor);
+        telaPlay.SetActive(!valor);
+        painelEscolhaCenario.SetActive(valor);
     }
 
     public void TrocarCenario(string nomeCenario)
@@ -126,9 +138,9 @@ public class ControlaUI : MonoBehaviour
         textoAcerto.text = "Colete " + acertosRestantes.ToString() + " lixos";
     }
 
-    public void AtualizarPainelGameOver(int pontos)
+    public void AtualizarPainelGameOver(int pontos, int recorde)
     {
-        int recorde = PlayerPrefs.GetInt("Recorde");
+        //Resgatar o valor do recod()
         textoPontuacaoFinal.text = "Seus Pontos: " + pontos.ToString() + " pontos";
         textoRecorde.text = "Seu Record: " + recorde.ToString() + " pontos";
     }

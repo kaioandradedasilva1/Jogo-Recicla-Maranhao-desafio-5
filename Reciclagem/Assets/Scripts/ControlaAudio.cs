@@ -33,16 +33,9 @@ public class ControlaAudio : MonoBehaviour
         }
     }
 
-    public void PausarAudioGamePlay(bool valor)
+    public void VolumeAudioGamePlay(float valor)
     {
-        if (valor)
-        {
-            audioGamePlay.volume = 0.2f;
-        } else 
-        {
-            audioGamePlay.volume = 0.5f;
-        }
-        
+        audioGamePlay.volume = valor;
     }
 
     public void TocarAudioPontuacao(bool acerto)
