@@ -56,8 +56,10 @@ public class Pontuacao : MonoBehaviour
         if (tempo > TempoParaAcerto)
         {
             tempoExedente = tempo - TempoParaAcerto; 
+        } else
+        {
+            tempoExedente = -TempoParaAcerto;
         }
-        Debug.Log(tempoExedente);
         pontos = Acertos*100 - erros*20 - Mathf.RoundToInt(tempoExedente)*5;
 
         if (pontos < 0) 

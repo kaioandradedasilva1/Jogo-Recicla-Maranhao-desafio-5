@@ -4,12 +4,13 @@ using UnityEngine.Networking;
 
 public class DadosDoUsuario : MonoBehaviour
 {
-    public string tipoUsuario; 
+    [Header("Credenciais do Usuário")]
+    private string tipoUsuario; 
+    public string idUsuario;
     public string nomeUsuario;
     public int recordeAtual;
 
-    private string urlSalvar = "";
-    private string urlConsultar = "";
+    private string urlAtualizar = "https://dc-descarte-certo-backend.onrender.com/api/usuarios/";
 
 
     public void DefinirUsuarioLocal(string nome)
@@ -19,12 +20,20 @@ public class DadosDoUsuario : MonoBehaviour
         tipoUsuario = "local";
     }
 
-    public void DefinirUsuarioOnline(string nome)
+    public void DefinirUsuarioOnline(string id, string nome, int recorde)
     {
-        ConsultarRecordeOnline();
-        nomeUsuario = nome; 
+        recordeAtual = recorde; 
+        nomeUsuario = nome;
+        idUsuario = id; 
         tipoUsuario = "online";
     }
+
+    [System.Serializable]
+    private class AtualizarRecordRequest
+    {
+        public int record;
+    }
+
 
     public void SalvarRecorde(int NovoRecorde)
     {
@@ -32,72 +41,36 @@ public class DadosDoUsuario : MonoBehaviour
 
         if (tipoUsuario == "local")
         {
-            PlayerPrefs.SetInt("Recorde-" + nomeUsuario, NovoRecorde);
+            PlayerPrefs.SetInt("Recorde-" + nomeUsuario, recordeAtual);
             PlayerPrefs.Save();
         } else 
         {
-            SalvarRecordeOnline();
+            StartCoroutine(RequisicaoAtualizarRecorde());
         }
+        
     }
 
-    [System.Serializable]
-    public class DadosRecorde
+    private IEnumerator RequisicaoAtualizarRecorde()
     {
-        public string username;
-        public int record;
-    }
-
-    // Envia dados do usuário para o servidor
-    public void SalvarRecordeOnline()
-    {
-        DadosRecorde dados = new DadosRecorde
-        {
-            username = nomeUsuario,
-            record = recordeAtual
-        };
-
+        AtualizarRecordRequest dados = new AtualizarRecordRequest { record = recordeAtual };
         string json = JsonUtility.ToJson(dados);
-        StartCoroutine(EnviarParaServidor(json));
-    }
 
-    private IEnumerator EnviarParaServidor(string json)
-    {
-        UnityWebRequest request = new UnityWebRequest(urlSalvar, "POST");
-        byte[] jsonToSend = new System.Text.UTF8Encoding().GetBytes(json);
-        request.uploadHandler = new UploadHandlerRaw(jsonToSend);
-        request.downloadHandler = new DownloadHandlerBuffer();
+        string urlFinal = urlAtualizar + UnityWebRequest.EscapeURL(idUsuario); // codifica o @
+
+        UnityWebRequest request = UnityWebRequest.Put(urlFinal, json);
         request.SetRequestHeader("Content-Type", "application/json");
 
         yield return request.SendWebRequest();
 
         if (request.result != UnityWebRequest.Result.Success)
-            Debug.LogError("Erro ao salvar: " + request.error);
-        else
-            Debug.Log("Recorde salvo com sucesso!");
-    }
-
-    // Consulta o recorde do usuário no servidor
-    public void ConsultarRecordeOnline()
-    {
-        StartCoroutine(ConsultarServidor(nomeUsuario));
-    }
-
-    private IEnumerator ConsultarServidor(string username)
-    {
-        UnityWebRequest request = UnityWebRequest.Get(urlConsultar + "?username=" + username);
-
-        yield return request.SendWebRequest();
-
-        if (request.result != UnityWebRequest.Result.Success)
         {
-            Debug.LogError("Erro ao consultar: " + request.error);
+            Debug.LogError("Erro ao atualizar recorde: " + request.error);
         }
         else
         {
-            string jsonResponse = request.downloadHandler.text;
-            DadosRecorde recordeRecebido = JsonUtility.FromJson<DadosRecorde>(jsonResponse);
-            recordeAtual = recordeRecebido.record;
-            Debug.Log("Recorde do usuário: " + recordeAtual);
+            Debug.Log("Recorde atualizado com sucesso!");
         }
     }
+
 }
+
