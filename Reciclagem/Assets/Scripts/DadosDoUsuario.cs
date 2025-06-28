@@ -55,7 +55,7 @@ public class DadosDoUsuario : MonoBehaviour
         AtualizarRecordRequest dados = new AtualizarRecordRequest { record = recordeAtual };
         string json = JsonUtility.ToJson(dados);
 
-        string urlFinal = urlAtualizar + UnityWebRequest.EscapeURL(idUsuario); // codifica o @
+        string urlFinal = urlAtualizar + idUsuario;
 
         UnityWebRequest request = UnityWebRequest.Put(urlFinal, json);
         request.SetRequestHeader("Content-Type", "application/json");

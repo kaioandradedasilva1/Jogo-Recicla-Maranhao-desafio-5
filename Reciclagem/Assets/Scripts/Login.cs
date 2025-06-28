@@ -8,7 +8,9 @@ public class Login : MonoBehaviour
 	[SerializeField] private ControlaUI controlaUI;
 	[SerializeField] private ControlaAudio controlaAudio;
 	[SerializeField] private DadosDoUsuario dadosUsuario; 
-
+    string idUsuario;
+    string nomeUsuario;
+    int recorde; 
 
 	[Header("Campo de Entrada")]
 	public InputField campoEmail;
@@ -27,6 +29,7 @@ public class Login : MonoBehaviour
     [System.Serializable]
     private class UsuarioResponse
     {
+        public string usuarioId;
         public string nome;
         public int? record; // Pode vir nulo
     }
@@ -60,14 +63,15 @@ public class Login : MonoBehaviour
             string resposta = request.downloadHandler.text;
             UsuarioResponse usuario = JsonUtility.FromJson<UsuarioResponse>(resposta);
 
-            string idUsuario = campoEmail.text; 
-            string nomeUsuario = usuario.nome;
-            int recorde = usuario.record.HasValue ? usuario.record.Value : 0;
+            idUsuario = usuario.usuarioId; 
+            nomeUsuario = usuario.nome;
+            recorde = usuario.record.HasValue ? usuario.record.Value : 0;
 			dadosUsuario.DefinirUsuarioOnline(idUsuario, nomeUsuario, recorde);
 			controlaUI.MostrarTelaPlay();
 			controlaUI.AtualizarSaldacao(nomeUsuario); 
             controlaAudio.TocarAudioMenu(true);
-            Debug.Log($"Login bem-sucedido. Nome: {nomeUsuario}, Recorde: {recorde}");
+            Debug.Log($"Login bem-sucedido. Id: {idUsuario}, Nome: {nomeUsuario}, Recorde: {recorde}");
+            Debug.Log(idUsuario);
         }
     }
 

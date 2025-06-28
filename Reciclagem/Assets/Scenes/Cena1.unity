@@ -6197,7 +6197,7 @@ MonoBehaviour:
   gamePlay: {fileID: 1890166163}
   dadosUsuario: {fileID: 480619972}
   Acertos: 0
-  AcertosMax: 20
+  AcertosMax: 10
   TempoParaAcerto: 1.5
 --- !u!4 &1445765357
 Transform:
