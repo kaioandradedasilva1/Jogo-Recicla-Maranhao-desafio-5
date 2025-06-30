@@ -13,9 +13,9 @@ public class DadosDoUsuario : MonoBehaviour
     private string urlAtualizar = "https://dc-descarte-certo-backend.onrender.com/api/usuarios/";
 
 
-    public void DefinirUsuarioLocal(string nome)
+    public void DefinirUsuarioLocal(string nome, int record)
     {
-        recordeAtual = PlayerPrefs.GetInt("Recorde-" + nome, 0);
+        recordeAtual = record;
         nomeUsuario = nome;
         tipoUsuario = "local";
     }

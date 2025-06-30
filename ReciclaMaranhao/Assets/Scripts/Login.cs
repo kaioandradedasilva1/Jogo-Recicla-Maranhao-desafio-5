@@ -8,9 +8,11 @@ public class Login : MonoBehaviour
 	[SerializeField] private ControlaUI controlaUI;
 	[SerializeField] private ControlaAudio controlaAudio;
 	[SerializeField] private DadosDoUsuario dadosUsuario; 
-    string idUsuario;
-    string nomeUsuario;
-    int recorde; 
+    private bool carregando = false; 
+    private string email; 
+    private string idUsuario;
+    private string nomeUsuario;
+    private int recorde;
 
 	[Header("Campo de Entrada")]
 	public InputField campoEmail;
@@ -29,15 +31,18 @@ public class Login : MonoBehaviour
     [System.Serializable]
     private class UsuarioResponse
     {
+        public string mensagem;
         public string usuarioId;
         public string nome;
-        public int? record; // Pode vir nulo
+        public string email;
+        public int record;
     }
 
 	public void FazerLogin()
     {
         controlaAudio.TocarClique();
         StartCoroutine(RequisicaoLogin());
+        StartCoroutine(MensagemLogin(true, "Carregando"));
     }
 
     private IEnumerator RequisicaoLogin()
@@ -56,22 +61,18 @@ public class Login : MonoBehaviour
         if (request.result != UnityWebRequest.Result.Success)
         {
 			string erro = "Erro ao fazer login: " + request.error;
-			controlaUI.ExibirMensagemLogin(erro);
+            StartCoroutine(MensagemLogin(false, erro));
         }
         else
         {
             string resposta = request.downloadHandler.text;
             UsuarioResponse usuario = JsonUtility.FromJson<UsuarioResponse>(resposta);
-
-            idUsuario = usuario.usuarioId; 
+            idUsuario = usuario.usuarioId;
+            email = usuario.email;
             nomeUsuario = usuario.nome;
-            recorde = usuario.record.HasValue ? usuario.record.Value : 0;
-			dadosUsuario.DefinirUsuarioOnline(idUsuario, nomeUsuario, recorde);
-			controlaUI.MostrarTelaPlay();
-			controlaUI.AtualizarSaldacao(nomeUsuario); 
-            controlaAudio.TocarAudioMenu(true);
-            Debug.Log($"Login bem-sucedido. Id: {idUsuario}, Nome: {nomeUsuario}, Recorde: {recorde}");
-            Debug.Log(idUsuario);
+            recorde = usuario.record; 
+            StartCoroutine(MensagemLogin(false, usuario.mensagem));
+            StartCoroutine(AcessarUsuarioOnLine());
         }
     }
 
@@ -79,21 +80,51 @@ public class Login : MonoBehaviour
 	{
 		controlaAudio.TocarClique();
 		string nomeConvidado = campoNomeConvidado.text;
-		if(nomeConvidado.Length > 2)
+		if(nomeConvidado == "")
 		{
-			controlaAudio.TocarAudioMenu(true);
-			controlaUI.MostrarTelaPlay();
-			dadosUsuario.DefinirUsuarioLocal(nomeConvidado);
-			controlaUI.AtualizarSaldacao(nomeConvidado);
-		} else
-		{
-			controlaUI.ExibirMensagemLogin("Insira seu nome");
+            nomeConvidado = "Player";
 		}
+        int record = PlayerPrefs.GetInt("Recorde-" + nomeConvidado, 0);
+		controlaAudio.TocarAudioMenu(true);
+		controlaUI.MostrarTelaPlay();
+		dadosUsuario.DefinirUsuarioLocal(nomeConvidado, record);
+		controlaUI.AtualizarTelaInicial(nomeConvidado, record);
 	}
 
 	public void FazerLogout()
 	{
 		controlaAudio.TocarAudioMenu(false);
 		controlaUI.MostrarTelaLogin();
+        controlaUI.ExibirMensagemLogin("");
 	}
+
+    IEnumerator AcessarUsuarioOnLine()
+    {
+        yield return new WaitForSeconds(1.5f);
+        dadosUsuario.DefinirUsuarioOnline(idUsuario, nomeUsuario, recorde);
+        controlaUI.MostrarTelaPlay();
+		controlaUI.AtualizarTelaInicial(nomeUsuario, recorde); 
+        controlaAudio.TocarAudioMenu(true);
+    }
+
+    IEnumerator MensagemLogin(bool valor, string mensagem)
+    {
+        carregando = valor;
+        string baseTexto = mensagem;
+        if (!carregando)
+        {
+            controlaUI.ExibirMensagemLogin(baseTexto);
+            yield break;
+        }
+
+        int pontos = 0;
+        while (carregando)
+        {
+           pontos = (pontos + 1) % 4;
+           string textoCarregando = baseTexto + new string('.', pontos);
+           controlaUI.ExibirMensagemLogin(textoCarregando);
+           yield return new WaitForSeconds(0.5f);
+        }
+    }
+
 }

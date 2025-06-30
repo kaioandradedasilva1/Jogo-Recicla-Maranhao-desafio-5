@@ -51,6 +51,7 @@ public class GamePlay : MonoBehaviour
         if(valor)
         {
             volume = 0.2f; 
+            controlaUI.AtualizarPainelPause(dadosUsuario.recordeAtual);
         } else
         {
             volume = 0.5f; 
@@ -73,6 +74,7 @@ public class GamePlay : MonoBehaviour
         }
         controlaAudio.VolumeAudioGamePlay(0.5f);
         pontuacao.ZerarPontos();
+        jogoExecutando = false;
         tempoDecorrido = 0; 
         DestrirLixo();
         IniciarJogo();
@@ -81,10 +83,12 @@ public class GamePlay : MonoBehaviour
     public void PararJogo()
     {
         controlaAudio.TocarClique();
+        controlaAudio.VolumeAudioGamePlay(0.5f);
         controlaAudio.TocarAudioGamePlay(false);
         controlaAudio.TocarAudioMenu(true);
         jogoExecutando = false;
         tempoDecorrido = 0f;
+        controlaUI.AtualizarTelaInicial(dadosUsuario.nomeUsuario, dadosUsuario.recordeAtual);
         controlaUI.MostrarPainelMenu();
         pontuacao.ZerarPontos();
         DestrirLixo();

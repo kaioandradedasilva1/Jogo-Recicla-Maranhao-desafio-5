@@ -11,6 +11,7 @@ public class ControlaUI : MonoBehaviour
     [SerializeField] private GameObject telaPlay; 
     [SerializeField] private Text mensagemLogin;
     [SerializeField] private Text textoSaudacao; 
+    [SerializeField] private Text textoRecordTelaInicial;
 
     // GamePlay
     [SerializeField] private GameObject painelGamePlay;
@@ -20,11 +21,12 @@ public class ControlaUI : MonoBehaviour
     [SerializeField] private Text textoTempo;
     [SerializeField] private Text textoTipoLixo;
     [SerializeField] private Text textoAcerto;
+    [SerializeField] private Text textoRecordPause;
 
     //GameOver 
     [SerializeField] private GameObject painelGameOver;
     [SerializeField] private Text textoPontuacaoFinal;
-    [SerializeField] private Text textoRecorde; 
+    [SerializeField] private Text textoRecordeGameOver; 
     [SerializeField] private Text textoParabens;
 
     //Cenarios
@@ -58,9 +60,21 @@ public class ControlaUI : MonoBehaviour
         telaPlay.SetActive(true);
     }
 
-    public void AtualizarSaldacao(string nome)
+    public void AtualizarTelaInicial(string nome, int recorde)
     {
         textoSaudacao.text = "Olá, " + nome; 
+        textoRecordTelaInicial.text = "Seu Recode: " + recorde.ToString() + " pontos";
+    }
+
+    public void AtualizarPainelGameOver(int pontos, int recorde)
+    {
+        textoPontuacaoFinal.text = "Seus Pontos: " + pontos.ToString() + " pontos";
+        textoRecordeGameOver.text = "Seu Record: " + recorde.ToString() + " pontos";
+    }
+
+    public void AtualizarPainelPause(int recorde)
+    {
+        textoRecordPause.text = "Seu Recode: " + recorde.ToString() + " pontos";
     }
 
     public void AtualizarTextoParabens(string nome)
@@ -136,13 +150,6 @@ public class ControlaUI : MonoBehaviour
     {
         yield return new WaitForSeconds(segundos);
         textoAcerto.text = "Colete " + acertosRestantes.ToString() + " lixos";
-    }
-
-    public void AtualizarPainelGameOver(int pontos, int recorde)
-    {
-        //Resgatar o valor do recod()
-        textoPontuacaoFinal.text = "Seus Pontos: " + pontos.ToString() + " pontos";
-        textoRecorde.text = "Seu Record: " + recorde.ToString() + " pontos";
     }
 
 }

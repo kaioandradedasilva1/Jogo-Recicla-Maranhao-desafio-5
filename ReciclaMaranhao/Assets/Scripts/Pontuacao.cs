@@ -14,7 +14,7 @@ public class Pontuacao : MonoBehaviour
     public int Acertos = 0;
     public int AcertosMax = 20;
     public float TempoParaAcerto = 2f; 
-    private int erros = 0; 
+    float intervaloTempo; 
     private int pontos = 0;
     private float tempoAnterior = 0;
 
@@ -26,41 +26,49 @@ public class Pontuacao : MonoBehaviour
 
     public void Pontuar(bool valor)
     { 
-        float intervaloTempo = gamePlay.tempoDecorrido - tempoAnterior;
     
         if(valor)
         {
             Acertos++;
+            intervaloTempo = gamePlay.tempoDecorrido - tempoAnterior;
+            CalcularPontos(true); 
+            
             controlaUI.AtualizarTextoAcerto("Acertou!", AcertosMax - Acertos);
             if (Acertos < AcertosMax)
             {
                 gamePlay.GerarNovoLixo();
             }
+            tempoAnterior = gamePlay.tempoDecorrido;
         } else 
         {
-            erros++;
+            CalcularPontos(false); 
             controlaUI.AtualizarTextoAcerto("Lixeira Errada!", AcertosMax - Acertos);
         }
 
-        CalcularPontos(intervaloTempo);
-        
         controlaUI.AtualizarPontuacao(Acertos, pontos);
         controlaAudio.TocarAudioPontuacao(valor);
         gamePlay.VerficarCertos(Acertos == AcertosMax, pontos);
-        tempoAnterior = gamePlay.tempoDecorrido;
     }
 
-    private void CalcularPontos(float tempo)
+    private void CalcularPontos(bool acertou)
     {
-        float tempoExedente = 0; 
-        if (tempo > TempoParaAcerto)
+        if (acertou) 
         {
-            tempoExedente = tempo - TempoParaAcerto; 
-        } else
+            pontos += 100; 
+        } else 
         {
-            tempoExedente = -TempoParaAcerto;
+            pontos = pontos - 20; 
         }
-        pontos = Acertos*100 - erros*20 - Mathf.RoundToInt(tempoExedente)*5;
+
+        if (intervaloTempo > TempoParaAcerto + 1 && acertou)
+        {
+            float tempoExedente = intervaloTempo - (TempoParaAcerto + 1); 
+            pontos = pontos - Mathf.RoundToInt(tempoExedente*10);
+        } else if (acertou)
+        {
+            float tempoNaoExedente = (TempoParaAcerto + 1) - intervaloTempo; 
+            pontos = pontos + Mathf.RoundToInt(tempoNaoExedente*10); 
+        }
 
         if (pontos < 0) 
         {
@@ -71,8 +79,8 @@ public class Pontuacao : MonoBehaviour
     public void ZerarPontos()
     {
         Acertos = 0;
-        erros = 0;
         pontos = 0; 
+        tempoAnterior = 0f;
         controlaUI.AtualizarPontuacao(Acertos, pontos);
         string textAcertoMax = "Colete " + AcertosMax.ToString() + " lixos";
         controlaUI.AtualizarTextoAcerto(textAcertoMax , AcertosMax);
