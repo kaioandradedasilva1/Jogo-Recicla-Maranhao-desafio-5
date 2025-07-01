@@ -41,6 +41,7 @@ public class GamePlay : MonoBehaviour
         controlaAudio.TocarClique();
         controlaAudio.TocarAudioMenu(false);
         controlaAudio.TocarAudioGamePlay(true);
+        controlaAudio.VolumeAudioGamePlay(0.5f);
         geradorLixo.ResertarPosicaoGeradorLixo();
         geradorLixo.GerarLixo();
     }
@@ -83,7 +84,6 @@ public class GamePlay : MonoBehaviour
     public void PararJogo()
     {
         controlaAudio.TocarClique();
-        controlaAudio.VolumeAudioGamePlay(0.5f);
         controlaAudio.TocarAudioGamePlay(false);
         controlaAudio.TocarAudioMenu(true);
         jogoExecutando = false;
@@ -123,6 +123,7 @@ public class GamePlay : MonoBehaviour
             controlaUI.MostrarPainelGamePlay(false);
             controlaUI.AtualizarPainelGameOver(pontos, dadosUsuario.recordeAtual);
             controlaUI.AtualizarTextoParabens(dadosUsuario.nomeUsuario);
+            controlaAudio.VolumeAudioGamePlay(0.2f);
             controlaAudio.TocarAudioConcluido();
         }
     }
