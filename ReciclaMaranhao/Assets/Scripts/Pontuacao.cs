@@ -67,7 +67,7 @@ public class Pontuacao : MonoBehaviour
         } else if (acertou)
         {
             float tempoNaoExedente = (TempoParaAcerto + 1) - intervaloTempo; 
-            pontos = pontos + Mathf.RoundToInt(tempoNaoExedente*10); 
+            pontos = pontos + Mathf.RoundToInt(tempoNaoExedente*20); 
         }
 
         if (pontos < 0) 
